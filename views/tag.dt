@@ -1,0 +1,29 @@
+doctype html
+
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet", href="/dir.css")
+        link(rel="stylesheet", href="/oxide.css")
+        title Browse tag #{tagname}
+    body
+        h1#logo LinkDir
+        h2=tagname
+        h3 Subcategories
+        ul
+            - import tag_tree;
+            - import std.conv;
+            - foreach (sub;tagsub)
+                li
+                    a(href="/id/"~sub.id.to!string, class="subcategory")=sub.name
+        h3 Links
+        ul
+            - import tag_tree;
+            - foreach (link;taglinks)
+                li
+                    a(href=link.url,target="_blank")=link.name
+        h3 Tag tree
+        |
+        |!= tagtree

@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/linkdir
+linkdir.so
+linkdir.dylib
+linkdir.dll
+linkdir.a
+linkdir.lib
+linkdir-test-*
+*.exe
+*.o
+*.obj
+*.lst

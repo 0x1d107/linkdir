@@ -1,0 +1,32 @@
+doctype html
+
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet", href="/dir.css")
+        link(rel="stylesheet", href="/oxide.css")
+        title Index page
+    body
+        h1#logo LinkDir
+        h2 Web directory
+        nav
+            ul
+                li
+                    a(href="add_link") [Add a link]
+                li
+                    a(href="manage_tags") [Manage tags]
+        
+        h3 Tag tree
+        |
+        |!= tagtree
+        h3 Links
+        div.dir-node
+            span.dir-name LinkDir
+
+            ul.dir-children
+                - foreach(row;result)
+                    li
+                        a(href=row["url"].as!string)= row["name"].as!string
+        

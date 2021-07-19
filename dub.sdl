@@ -1,0 +1,8 @@
+name "linkdir"
+description "Personal web directory"
+authors "0x1d107"
+copyright "Copyright © 2021, 0x1d107"
+license "GPL v3"
+dependency "vibe-d" version="~>0.9"
+dependency "dpq" version="~>0.11.5"
+dependency "diet-ng" version="~>1.7.5"

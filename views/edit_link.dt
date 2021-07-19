@@ -1,0 +1,27 @@
+doctype html
+
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet", href="/dir.css")
+        link(rel="stylesheet", href="/oxide.css")
+        title Edit link 
+    body
+        h1#logo LinkDir
+        h2 Edit link
+        form(method="post",action="/edit_link")
+            p
+                label(for="link-name") Link name:
+                input(id="link-name",type="text",name="name")
+            p
+                label(for="link-url") URL:
+                input(id="link-url",type="text",name="url")
+            p
+                input(type="submit",value="edit",name="action")
+                input(type="submit",value="delete",name="action")
+            div
+                |
+                |!=tagtree
+        

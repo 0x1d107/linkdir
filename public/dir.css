@@ -1,0 +1,65 @@
+
+ul.dir-children{
+    list-style-type:none;
+    border-left-style:solid;
+    padding-left:10px;
+    padding-top:10px;
+
+    margin:0px 10px;
+}
+ul.dir-children:empty{
+    display:none;
+}
+ul.dir-children li::before{
+    border-bottom-style:solid;
+    position: relative;
+    left: -10px;
+    top: -5px;
+    display:inline-block;
+    height:1em;
+    width:10px;
+    content:" ";
+    margin-right:-10px
+}
+.dir-node .dir-name{
+    margin:10px 0px 0px 4px;
+    padding-bottom:2px;
+    border-bottom-style:solid;
+    border-color: #ffffff;
+    display: inline-block;
+
+}
+.dir-node .dir-name a{
+
+    color: #00d1d1;
+}
+.dir-node .dir-name a:visited{
+
+    color: #00a8a8;
+}
+a.subcategory{
+
+    color: #00d1d1;
+}
+a.subcategory:visited{
+
+    color: #00a8a8;
+}
+.dir-node{
+    display:inline;
+}
+form{
+    display: table;
+}
+form p{
+    display: table-row;
+}
+form p label{
+    display: table-cell;
+    text-align:end;
+    padding-right: 8px;
+}
+form p input{
+    display:table-cell;
+
+}

@@ -1,0 +1,15 @@
+
+body{
+    color: #ffffff;
+    background: #000;
+    font-family: sans-serif;
+}
+a{
+    color:#01d107;
+}
+a:visited{
+    color:#32a836;
+}
+#logo{
+    font-family: monospace;
+}

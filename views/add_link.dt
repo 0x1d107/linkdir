@@ -1,0 +1,24 @@
+doctype html
+
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet", href="/dir.css")
+        link(rel="stylesheet", href="/oxide.css")
+        title Add a link
+    body
+        h1#logo LinkDir
+        h2 Add a link
+        form(action="/add_link", method="post")
+            p
+                label(for="linkname") Link name:
+                input(type="text",id="linkname", name="linkname",placeholder="Link name",autofocus=true)
+            p
+                label(for="linkvalue") URL:
+                input(type="text",id="linkvalue",name="linkvalue",placeholder="http://example.com")
+            input(type="submit")
+            h3 Tags
+            div#tag_tree
+                |!=tagtree
