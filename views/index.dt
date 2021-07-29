@@ -9,7 +9,8 @@ html(lang="en")
         link(rel="stylesheet", href="/oxide.css")
         title Index page
     body
-        h1#logo LinkDir
+        h1#logo
+            a(href="/") LinkDir
         h2 Web directory
         nav
             ul
@@ -17,16 +18,15 @@ html(lang="en")
                     a(href="add_link") [Add a link]
                 li
                     a(href="manage_tags") [Manage tags]
-        
-        h3 Tag tree
-        |
-        |!= tagtree
-        h3 Links
-        div.dir-node
-            span.dir-name LinkDir
-
-            ul.dir-children
-                - foreach(row;result)
-                    li
-                        a(href=row["url"].as!string)= row["name"].as!string
+        h3 Search
+        form(action="search",method="get",id="search-form")
+            input(type="search",name="search",id="search")
+            input(type="submit",value="Search")
+        h3 Categories
+        ul#categories
+            - import tag_tree;
+            - import std.conv;
+            - foreach (sub;tagsub)
+                li
+                    a(href="/id/"~sub.id.to!string, class="subcategory")=sub.name
         

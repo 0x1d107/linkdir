@@ -18,19 +18,17 @@ class LinkDirWeb{
 	}
 	@path("/")
 	void getIndex(){
-		auto result = db.exec("select * from links;");
+		//auto result = db.exec("select * from links;");
 		auto tagtree = tree.list_tags(0).renderHTML();
 		/*foreach (row; result)
 		{
 			writeln(row["name"].as!string,"\t",row["url"].as!string);
 		}*/
+		auto tagsub = tree.list_tags(0).get_subcategories();
 		
-		render!("index.dt",result,tagtree);
+		render!("index.dt",tagsub,tagtree);
 	}
-	@path("/tag/*")
-	void getTag(scope HTTPServerRequest req,scope HTTPServerResponse res){
-		res.writeBody("Got url path: "~ req.requestPath.toString());
-	}
+
 	@path("/id/:id")
 	void getTagById(scope HTTPServerRequest req,scope HTTPServerResponse res){
 		auto id = req.params["id"].to!int;
@@ -38,8 +36,11 @@ class LinkDirWeb{
 		auto tagsub = ttree.get_subcategories();
 		auto tagtree = ttree.renderHTML();
 		auto taglinks = tree.list_links(id);
-		auto tagname = tree.get_tag_by_id(id).get(TagTree.Tag(0,"/",0)).name;
-		render!("tag.dt",tagtree,taglinks,tagname,tagsub);
+		auto tag = tree.get_tag_by_id(id).get(TagTree.Tag(0,"/",0,Nullable!int.init,Nullable!string.init));
+		auto tagname = tag.name;
+		auto tagparent = tag.parent;
+		auto tagsummary = tag.summary;
+		render!("tag.dt",tagtree,taglinks,tagname,tagsub,tagparent,tagsummary);
 	}
 	void getAddTag(int parent,string name){
 		tree.add_tag(name,parent);
@@ -56,16 +57,14 @@ class LinkDirWeb{
 	
 		string linkname = req.form.get("linkname","");
 		string linkvalue = req.form.get("linkvalue","");
-		
-		if(linkname.length>0){
+		auto tags = req.form.getAll("tags");
+		if(linkname.length>0 && !tags.empty()){
 			if(linkvalue.length){
 				auto link_id = tree.add_link(linkname,linkvalue);
-				auto tags = req.form.getAll("tags");
+				
 				foreach (tag; tags){
 					tree.tag_link(tag.to!int,link_id);
 				}
-			}else{
-				db.execParams("delete from links where name=$1::text;",linkname);
 			}	
 		}
 		
@@ -88,6 +87,43 @@ class LinkDirWeb{
 			tree.remove_tag(tag);
 		}
 		redirect("/manage_tags");
+	}
+	void getEditLink(int id=0){
+		auto link_nullable = tree.get_link_by_id(id);
+		if(link_nullable.isNull()){
+			redirect("/add_link");
+
+		}else{
+			auto link = link_nullable.get();
+			auto rbtags = tree.get_link_tags(id);
+			string checkbox(tag_tree.TagTree.Tag t){
+				return "<input type='checkbox' name='tags' %s value='%d'/>".format(!rbtags.equalRange(t.id).empty?"checked":"",t.id);
+			}
+			auto tagtree = tree.list_tags(0).renderHTML((tag_tree.TagTree.Tag t)=>checkbox(t));
+			render!("edit_link.dt",tagtree,link);
+		}
+	}
+	void postEditLink(scope HTTPServerRequest req,scope HTTPServerResponse res,
+					string action,int id,string name,string url,string summary=""){
+		if(action == "edit"){
+			tree.update_link(id,name,url,summary);
+
+			auto tags = SList!(int)();
+			foreach(tag;req.form.getAll("tags")){
+				tags.insertFront(tag.to!int);
+			}
+			tree.set_link_tags(id,tags);
+			redirect("/edit_link?id="~id.to!string);
+		}else if(action == "delete"){
+			tree.remove_link(id);
+			redirect("/");
+		}
+		
+	}
+	void getSearch(string search = ""){
+		auto links = tree.search_links(search);
+		auto tags = tree.search_tags(search);
+		render!("search.dt",search,tags,links);
 	}
 
 }

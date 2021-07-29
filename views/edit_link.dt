@@ -9,18 +9,24 @@ html(lang="en")
         link(rel="stylesheet", href="/oxide.css")
         title Edit link 
     body
-        h1#logo LinkDir
+        h1#logo
+            a(href="/") LinkDir
         h2 Edit link
         form(method="post",action="/edit_link")
+            input(type="hidden",name="id", value=link.id)
             p
                 label(for="link-name") Link name:
-                input(id="link-name",type="text",name="name")
+                input(id="link-name",type="text",name="name", value=link.name)
             p
                 label(for="link-url") URL:
-                input(id="link-url",type="text",name="url")
+                input(id="link-url",type="text",name="url", value=link.url)
+            p 
+                label(for="url-summary") Summary:
+                textarea(id="url-summary",name="summary")=link.summary.get("")
             p
                 input(type="submit",value="edit",name="action")
                 input(type="submit",value="delete",name="action")
+            
             div
                 |
                 |!=tagtree

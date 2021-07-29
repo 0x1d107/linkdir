@@ -9,7 +9,8 @@ html(lang="en")
         link(rel="stylesheet", href="/oxide.css")
         title Add a link
     body
-        h1#logo LinkDir
+        h1#logo
+            a(href="/") LinkDir
         h2 Add a link
         form(action="/add_link", method="post")
             p
@@ -17,7 +18,7 @@ html(lang="en")
                 input(type="text",id="linkname", name="linkname",placeholder="Link name",autofocus=true)
             p
                 label(for="linkvalue") URL:
-                input(type="text",id="linkvalue",name="linkvalue",placeholder="http://example.com")
+                input(type="url",id="linkvalue",name="linkvalue",placeholder="http://example.com")
             input(type="submit")
             h3 Tags
             div#tag_tree

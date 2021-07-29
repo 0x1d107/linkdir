@@ -9,7 +9,8 @@ html(lang="en")
         link(rel="stylesheet", href="/oxide.css")
         title Manage tags
     body
-        h1#logo LinkDir
+        h1#logo
+            a(href="/") LinkDir
         h2 Manage tags
         form(method="post",action="/manage_tags")
             p
@@ -19,6 +20,7 @@ html(lang="en")
                 input(type="submit",value="create",name="action")
                 input(type="submit",value="delete",name="action")
             div
-                |
+                p Create root tag 
+                    input(type="radio",name="tag",checked=true,value=0)
                 |!=tagtree
         

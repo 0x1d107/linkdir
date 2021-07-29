@@ -9,21 +9,37 @@ html(lang="en")
         link(rel="stylesheet", href="/oxide.css")
         title Browse tag #{tagname}
     body
-        h1#logo LinkDir
+        h1#logo
+            a(href="/") LinkDir
         h2=tagname
-        h3 Subcategories
-        ul
-            - import tag_tree;
-            - import std.conv;
-            - foreach (sub;tagsub)
-                li
-                    a(href="/id/"~sub.id.to!string, class="subcategory")=sub.name
+        - import std.typecons;
+        -if(tagparent.isNull())
+            a(href="/") ^ main page
+        -else
+            a(href="/id/"~tagparent.get().to!string) ^ parent tag
+        -if(!tagsummary.isNull())
+            h3 Summary
+            p= tagsummary.get()
+        - if(!tagsub.empty())
+            h3 Subcategories
+            ul#subcategories
+                - import tag_tree;
+                - import std.conv;
+                - foreach (sub;tagsub)
+                    li
+                        a(href="/id/"~sub.id.to!string, class="subcategory")=sub.name
         h3 Links
-        ul
+        ul#links
             - import tag_tree;
             - foreach (link;taglinks)
                 li
                     a(href=link.url,target="_blank")=link.name
-        h3 Tag tree
-        |
-        |!= tagtree
+                    | 
+                    a(href="/edit_link?id="~link.id.to!string) [E]
+                    - if(!link.summary.isNull())
+                        |
+                        | &mdash; #{link.summary.get("")}
+        - if(tagtree.length)
+            h3 Tag tree
+            |
+            |!= tagtree

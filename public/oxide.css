@@ -10,6 +10,8 @@ a{
 a:visited{
     color:#32a836;
 }
-#logo{
+h1#logo a{
     font-family: monospace;
+    color:white;
+    text-decoration:overline;
 }

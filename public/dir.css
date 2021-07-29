@@ -58,8 +58,28 @@ form p label{
     display: table-cell;
     text-align:end;
     padding-right: 8px;
+
 }
 form p input{
     display:table-cell;
 
+}
+ul#subcategories{
+    list-style: none;
+}
+ul#subcategories li{
+    display: inline-block;
+
+    padding: 1em;
+}
+#links li{
+    padding: 6px 0px;
+}
+#search-form{
+    text-align: center;
+    width:100%;
+}
+#search{
+    width: 50%;
+    
 }
