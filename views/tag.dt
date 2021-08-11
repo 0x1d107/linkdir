@@ -17,9 +17,11 @@ html(lang="en")
             a(href="/") ^ main page
         -else
             a(href="/id/"~tagparent.get().to!string) ^ parent tag
+        |
+        a(href="/edit_tag?id="~id.to!string) edit summary
         -if(!tagsummary.isNull())
             h3 Summary
-            p= tagsummary.get()
+            p=tagsummary.get()
         - if(!tagsub.empty())
             h3 Subcategories
             ul#subcategories

@@ -50,6 +50,7 @@ a.subcategory:visited{
 }
 form{
     display: table;
+    width:80%
 }
 form p{
     display: table-row;
@@ -57,11 +58,21 @@ form p{
 form p label{
     display: table-cell;
     text-align:end;
+    width:20%;
+    float:left;
     padding-right: 8px;
 
 }
-form p input{
+form p input[type="text"],form p input[type="url"]{
+    width:70%;
+    float:left;
     display:table-cell;
+
+}
+
+form p textarea{
+    width: 70%;
+    height: 6em;
 
 }
 ul#subcategories{

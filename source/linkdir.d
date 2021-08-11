@@ -40,7 +40,7 @@ class LinkDirWeb{
 		auto tagname = tag.name;
 		auto tagparent = tag.parent;
 		auto tagsummary = tag.summary;
-		render!("tag.dt",tagtree,taglinks,tagname,tagsub,tagparent,tagsummary);
+		render!("tag.dt",id,tagtree,taglinks,tagname,tagsub,tagparent,tagsummary);
 	}
 	void getAddTag(int parent,string name){
 		tree.add_tag(name,parent);
@@ -124,6 +124,20 @@ class LinkDirWeb{
 		auto links = tree.search_links(search);
 		auto tags = tree.search_tags(search);
 		render!("search.dt",search,tags,links);
+	}
+	void getEditTag(int id=0){
+		auto tag = tree.get_tag_by_id(id);
+		if (tag.isNull()){
+			redirect("/manage_tags");
+			return;
+		}else{
+			render!("edit_tag.dt",tag);
+		}
+
+	}
+	void postEditTag(int id,string summary ){
+		tree.update_tag(id,summary);
+		redirect("/id/"~id.to!string);
 	}
 
 }

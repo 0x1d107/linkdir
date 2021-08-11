@@ -21,6 +21,6 @@ html(lang="en")
                 input(type="submit",value="delete",name="action")
             div
                 p Create root tag 
-                    input(type="radio",name="tag",checked=true,value=0)
+                    input(type="radio",name="tag",checked="true",value=0)
                 |!=tagtree
         

@@ -33,7 +33,8 @@ class LinkTree{
     SQL_LINK_CLEAR_TAGS,
     SQL_LINK_UPDATE,
     SQL_LINK_SEARCH,
-    SQL_TAG_SEARCH;
+    SQL_TAG_SEARCH,
+    SQL_TAG_UPDATE;
     private Result exec(T...)(string q,T params){
         return this.db.execParams(q,params);
     }
@@ -79,7 +80,7 @@ class LinkTree{
         this.SQL_LINK_UPDATE = "update links set name = $2::varchar,url= $3::varchar,summary=$4::varchar where id = $1::int;";
         this.SQL_LINK_SEARCH = "select * from links where ts @@ websearch_to_tsquery('english',$1::varchar);";
         this.SQL_TAG_SEARCH = "select * from tags where ts @@ websearch_to_tsquery('english',$1::varchar);";
-
+        this.SQL_TAG_UPDATE = "update tags set summary = $2::varchar where id = $1::int;";
     }
     Connection getDB(){
         return db;
@@ -169,6 +170,9 @@ class LinkTree{
             return Nullable!(TagTree.Tag)(TagTree.Tag(0,"",0)).init;
         return Nullable!(TagTree.Tag)(TagTree.Tag(id,res[0]["name"].as!string.get(),res[0]["level"].as!int.get(),
                 res[0]["parent"].as!int,res[0]["summary"].as!string));
+    }
+    void update_tag(int id,string summary=""){
+        exec(SQL_TAG_UPDATE,id,summary);
     }
     void tag_link(int tag,int link){
         exec(SQL_TAG_LINK,tag,link);
