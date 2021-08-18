@@ -11,6 +11,7 @@ html(lang="en")
     body
         h1#logo
             a(href="/") LinkDir
+        p Logged in as #{username}
         h2=tagname
         - import std.typecons;
         -if(tagparent.isNull())
@@ -18,7 +19,8 @@ html(lang="en")
         -else
             a(href="/id/"~tagparent.get().to!string) ^ parent tag
         |
-        a(href="/edit_tag?id="~id.to!string) edit summary
+        -if(writeperm)
+            a(href="/edit_tag?id="~id.to!string) edit summary
         -if(!tagsummary.isNull())
             h3 Summary
             p=tagsummary.get()
@@ -37,7 +39,8 @@ html(lang="en")
                 li
                     a(href=link.url,target="_blank")=link.name
                     | 
-                    a(href="/edit_link?id="~link.id.to!string) [E]
+                    -if(linkperm)
+                        a(href="/edit_link?id="~link.id.to!string) [E]
                     - if(!link.summary.isNull())
                         |
                         | &mdash; #{link.summary.get("")}

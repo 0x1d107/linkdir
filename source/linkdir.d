@@ -8,16 +8,25 @@ import std.format;
 import std.conv;
 import link_tree;
 import tag_tree;
+import login_manager;
+
 
 class LinkDirWeb{
 	private LinkTree tree;
 	private Connection db;
+	private LoginManager login_manager;
+
 	this(){
 		tree = new LinkTree();
 		db = tree.getDB();
+		login_manager=new LoginManager(db);
+	}
+	void getLogin(scope HTTPServerRequest req,scope HTTPServerResponse res){
+		performBasicAuth(req,res,"Link Dir Realm",&login_manager.pwcheck);
+		redirect("/");
 	}
 	@path("/")
-	void getIndex(){
+	void getIndex(scope HTTPServerRequest req,scope HTTPServerResponse res){
 		//auto result = db.exec("select * from links;");
 		auto tagtree = tree.list_tags(0).renderHTML();
 		/*foreach (row; result)
@@ -25,8 +34,8 @@ class LinkDirWeb{
 			writeln(row["name"].as!string,"\t",row["url"].as!string);
 		}*/
 		auto tagsub = tree.list_tags(0).get_subcategories();
-		
-		render!("index.dt",tagsub,tagtree);
+		auto username = login_manager.getUsername(req,res);
+		render!("index.dt",tagsub,tagtree,username);
 	}
 
 	@path("/id/:id")
@@ -40,21 +49,28 @@ class LinkDirWeb{
 		auto tagname = tag.name;
 		auto tagparent = tag.parent;
 		auto tagsummary = tag.summary;
-		render!("tag.dt",id,tagtree,taglinks,tagname,tagsub,tagparent,tagsummary);
+		auto writeperm = login_manager.check_permission(req,res,tree.getId(),PermissionBits.EDIT_TAGS,false);
+		auto linkperm = login_manager.check_permission(req,res,tree.getId(),PermissionBits.EDIT_LINKS,false);
+		auto username = login_manager.getUsername(req,res);
+		login_manager.ensure_permission(req,res,tree.getId(),PermissionBits.READ);
+		render!("tag.dt",id,tagtree,taglinks,tagname,tagsub,tagparent,tagsummary,writeperm,linkperm,username);
 	}
-	void getAddTag(int parent,string name){
+	void getAddTag(scope HTTPServerRequest req,scope HTTPServerResponse res,int parent,string name){
+		login_manager.ensure_permission(req,res,tree.getId(),PermissionBits.EDIT_TAGS);
 		tree.add_tag(name,parent);
 		redirect("/");
 	}
-	void getRmTag(int id){
+	void getRmTag(scope HTTPServerRequest req,scope HTTPServerResponse res,int id){
+		login_manager.ensure_permission(req,res,tree.getId(),PermissionBits.EDIT_TAGS | PermissionBits.EDIT_LINKS);
 		tree.remove_tag(id);
 		redirect("/");
 	}
-	void getTagLink(int tag_id,int link_id){
+	void getTagLink(scope HTTPServerRequest req,scope HTTPServerResponse res,int tag_id,int link_id){
+		login_manager.ensure_permission(req,res,tree.getId(),PermissionBits.EDIT_TAGS | PermissionBits.EDIT_LINKS);
 		tree.tag_link(tag_id,link_id);
 	}
 	void postAddLink(scope HTTPServerRequest req,scope HTTPServerResponse res){
-	
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.EDIT_LINKS);
 		string linkname = req.form.get("linkname","");
 		string linkvalue = req.form.get("linkvalue","");
 		auto tags = req.form.getAll("tags");
@@ -72,15 +88,18 @@ class LinkDirWeb{
 		
 		res.redirect("/");
 	}
-	void getAddLink(){
+	void getAddLink(scope HTTPServerRequest req,scope HTTPServerResponse res,){
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.EDIT_LINKS);
 		auto tagtree = tree.list_tags(0).renderHTML((t)=>"<input type='checkbox' name='tags' value='%d'/>".format(t.id));
 		render!("add_link.dt",tagtree);
 	}
-	void getManageTags(){
+	void getManageTags(scope HTTPServerRequest req,scope HTTPServerResponse res,){
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.EDIT_TAGS);
 		auto tagtree = tree.list_tags(0).renderHTML((t)=>"<input type='radio' name='tag' value='%d'/>".format(t.id));
 		render!("manage_tags.dt",tagtree);
 	}
-	void postManageTags(string action,int tag=0,string name=""){
+	void postManageTags(scope HTTPServerRequest req,scope HTTPServerResponse res,string action,int tag=0,string name=""){
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.EDIT_TAGS);
 		if(action == "create" && name.length > 0){
 			tree.add_tag(name,tag);
 		}else if(action == "delete"){
@@ -88,7 +107,8 @@ class LinkDirWeb{
 		}
 		redirect("/manage_tags");
 	}
-	void getEditLink(int id=0){
+	void getEditLink(scope HTTPServerRequest req,scope HTTPServerResponse res,int id=0){
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.EDIT_LINKS);
 		auto link_nullable = tree.get_link_by_id(id);
 		if(link_nullable.isNull()){
 			redirect("/add_link");
@@ -105,6 +125,7 @@ class LinkDirWeb{
 	}
 	void postEditLink(scope HTTPServerRequest req,scope HTTPServerResponse res,
 					string action,int id,string name,string url,string summary=""){
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.EDIT_LINKS);
 		if(action == "edit"){
 			tree.update_link(id,name,url,summary);
 
@@ -120,12 +141,14 @@ class LinkDirWeb{
 		}
 		
 	}
-	void getSearch(string search = ""){
+	void getSearch(scope HTTPServerRequest req,scope HTTPServerResponse res,string search = ""){
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.READ);
 		auto links = tree.search_links(search);
 		auto tags = tree.search_tags(search);
 		render!("search.dt",search,tags,links);
 	}
-	void getEditTag(int id=0){
+	void getEditTag(scope HTTPServerRequest req,scope HTTPServerResponse res,int id=0){
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.EDIT_TAGS);
 		auto tag = tree.get_tag_by_id(id);
 		if (tag.isNull()){
 			redirect("/manage_tags");
@@ -135,7 +158,8 @@ class LinkDirWeb{
 		}
 
 	}
-	void postEditTag(int id,string summary ){
+	void postEditTag(scope HTTPServerRequest req,scope HTTPServerResponse res,int id,string summary ){
+		login_manager.ensure_permission(req,res,tree.getId(), PermissionBits.EDIT_TAGS);
 		tree.update_tag(id,summary);
 		redirect("/id/"~id.to!string);
 	}

@@ -87,3 +87,6 @@ ALTER TABLE public.tag_link ADD CONSTRAINT tag_fk FOREIGN KEY (tag_id) REFERENCE
 CREATE INDEX link_ts ON public.links USING gin (ts);
 CREATE INDEX tag_ts ON public.tags USING gin (ts);
 
+-- DEFAULT VALUES
+INSERT INTO public.users(id,login,hash,email) values (0,public,NULL,NULL);
+INSERT INTO public.permissions(tree_id,user_id,permission_byte) VALUES (0,0,1);

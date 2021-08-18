@@ -12,12 +12,15 @@ html(lang="en")
         h1#logo
             a(href="/") LinkDir
         h2 Web directory
+        p Logged in as #{username}
         nav
             ul
                 li
                     a(href="add_link") [Add a link]
                 li
                     a(href="manage_tags") [Manage tags]
+                li
+                    a(href="login") [Login]
         h3 Search
         form(action="search",method="get",id="search-form")
             input(type="search",name="search",id="search")

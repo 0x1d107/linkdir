@@ -11,7 +11,7 @@ import std.typecons;
 class LinkTree{
     private Connection db;
     private int tree_id;
-    private string SQL_ADD_LINK,  
+    private const string SQL_ADD_LINK,  
     SQL_ADD_TAG_UPDATE,
     SQL_ADD_TAG_INSERT,
     SQL_TAG_SELECT_LR_BY_ID,
@@ -81,6 +81,7 @@ class LinkTree{
         this.SQL_LINK_SEARCH = "select * from links where ts @@ websearch_to_tsquery('english',$1::varchar);";
         this.SQL_TAG_SEARCH = "select * from tags where ts @@ websearch_to_tsquery('english',$1::varchar);";
         this.SQL_TAG_UPDATE = "update tags set summary = $2::varchar where id = $1::int;";
+        this.tree_id=tree_id;
     }
     Connection getDB(){
         return db;
@@ -92,7 +93,9 @@ class LinkTree{
         return (res[0][0].as!int).get(0);
           
     }
-
+    int getId(){
+        return tree_id;
+    }
     void add_tag(string name,int parent_id){
         db.begin();
         auto res = exec(SQL_TAG_SELECT_LR_BY_ID,parent_id);
