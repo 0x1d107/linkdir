@@ -1,0 +1,49 @@
+doctype html
+
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        meta(http-equiv="X-UA-Compatible", content="ie=edge")
+        link(rel="stylesheet", href="/dir.css")
+        link(rel="stylesheet", href="/oxide.css")
+        title Edit users
+    body
+        h1#logo
+            a(href="/") LinkDir
+        h2 Create user
+        form(action="/create_user",method="post")
+            p
+                label(for="email") Email:
+                input(id="email",type="email",name="email",placeholder="username@example.com")
+            p
+                label(for="username") User name:
+                input(id="username",type="text",name="username",placeholder="username")
+            p
+                label(for="password") Password:
+                input(id="password",type="password",name="password",placeholder="correct_horse_battery_staple")
+            p
+                input(type="submit")
+
+        h2 Edit users
+        table#users
+            thead
+                tr
+                    th Username
+                    th Permissions
+                    th Delete user
+            tbody
+                    
+            - foreach(user;users)
+                tr
+                    td=user.name
+                    td
+                        form(action="/edit_permissions", method="post",style="width:auto;")
+                            input(type="hidden",name="id",value=user.id)
+                            - string perms = "";
+                            - foreach(k,v;user.permissions)
+                                - perms~= k.to!string ~ ":" ~ v.to!string ~ " ";
+                            input(name="perms",value=perms)
+                            input(type="submit",value="Update")
+                    td
+                        a(href="/delete_user?id="~user.id.to!string) Delete user

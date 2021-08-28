@@ -163,5 +163,31 @@ class LinkDirWeb{
 		tree.update_tag(id,summary);
 		redirect("/id/"~id.to!string);
 	}
-
+	void getEditPermissions(scope HTTPServerRequest req,scope HTTPServerResponse res){
+		login_manager.ensure_permission(req,res,tree.getId(),PermissionBits.EDIT_PERMISSIONS);
+		auto users = login_manager.getUsers();
+		render!("edit_permissions.dt",users);
+	}
+	void postEditPermissions(scope HTTPServerRequest req,scope HTTPServerResponse res,int id,string perms){
+		login_manager.ensure_permission(req,res,tree.getId(),PermissionBits.EDIT_PERMISSIONS);
+		int[int] perm_bytes;
+		foreach(entry;perms.split){
+			auto k = entry.split(':')[0].to!int;
+			auto v = entry.split(':')[1].to!int;
+			perm_bytes[k] = v;
+		}
+		login_manager.updatePermissions(id,perm_bytes);
+		redirect("/edit_permissions");
+		
+	}
+	void getDeleteUser(scope HTTPServerRequest req,scope HTTPServerResponse res,int id){
+		login_manager.ensure_permission(req,res,tree.getId(),PermissionBits.EDIT_PERMISSIONS);
+		login_manager.deleteUser(id);
+		redirect("/edit_permissions");
+	}
+	void postCreateUser(scope HTTPServerRequest req,scope HTTPServerResponse res,string username,string password,string email=""){
+		login_manager.ensure_permission(req,res,tree.getId(),PermissionBits.EDIT_PERMISSIONS);
+		login_manager.createUser(username,password,email);
+		redirect("/edit_permissions");
+	}
 }

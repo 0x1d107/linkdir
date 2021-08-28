@@ -5,7 +5,7 @@ import dpq.result;
 import tag_tree;
 import std.container;
 import std.typecons;
-/*
+/**
 *    This class is responsible for getting link tree from the database. 
 */
 class LinkTree{

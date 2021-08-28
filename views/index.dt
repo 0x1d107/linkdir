@@ -21,6 +21,8 @@ html(lang="en")
                     a(href="manage_tags") [Manage tags]
                 li
                     a(href="login") [Login]
+                li
+                    a(href="edit_permissions") [Edit permissions]
         h3 Search
         form(action="search",method="get",id="search-form")
             input(type="search",name="search",id="search")

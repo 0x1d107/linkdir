@@ -63,7 +63,7 @@ form p label{
     padding-right: 8px;
 
 }
-form p input[type="text"],form p input[type="url"]{
+form p input[type="text"],form p input[type="url"],form p input[type="email"],form p input[type="password"]{
     width:70%;
     float:left;
     display:table-cell;

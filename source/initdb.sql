@@ -78,7 +78,7 @@ CREATE TABLE public.users (
 
 -- public.permissions foreign keys
 
-ALTER TABLE public.permissions ADD CONSTRAINT permissions_fk FOREIGN KEY (user_id) REFERENCES public.users(id);
+ALTER TABLE public.permissions ADD CONSTRAINT permissions_fk FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 -- public.tag_link foreign keys
 
 ALTER TABLE public.tag_link ADD CONSTRAINT link_fk FOREIGN KEY (link_id) REFERENCES public.links(id) ON DELETE CASCADE;
