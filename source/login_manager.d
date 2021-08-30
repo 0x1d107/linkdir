@@ -51,7 +51,7 @@ class LoginManager{
     bool hasPermission(int user,int tree,int action_bits){
         auto res = db.execParams("select permission_byte from permissions where tree_id = $1::int and user_id = $2::int;",tree,user);
         if(res.empty())
-            return false;
+            return user == superuser;
         int perms = res[0][0].as!int.get();
         return (perms & action_bits) == action_bits || user == superuser;
     }

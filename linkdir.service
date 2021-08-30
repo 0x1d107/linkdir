@@ -1,0 +1,16 @@
+[Unit]
+Description = LinkDir HTTP web directory
+After = network.target
+After = syslog.target
+
+[Service]
+Type=simple
+User=linkdir
+Environment="PGSOCK=/var/run/postgresql"
+WorkingDirectory=/usr/local/bin/linkdir/app/linkdir
+ExecStart=/usr/local/bin/linkdir/app/linkdir/linkdir
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

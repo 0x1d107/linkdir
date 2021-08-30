@@ -39,8 +39,8 @@ class LinkTree{
         return this.db.execParams(q,params);
     }
     
-    this(int tree_id=0){
-        this.db = Connection("host=127.0.0.1 dbname=linkdir user=linkdir");
+    this(Connection conn,int tree_id=0){
+        this.db = conn;
         this.tree_id = tree_id;
         this.SQL_ADD_LINK = "insert into links(name,url) values ($1::varchar,$2::varchar) returning id;";
         this.SQL_ADD_TAG_UPDATE = "update tags 

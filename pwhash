@@ -1,0 +1,6 @@
+#!/bin/env python
+import secrets,hashlib,sys
+def pwhash(pw):
+    salt = secrets.token_urlsafe(16)
+    return salt+":"+hashlib.sha512((salt+":"+pw).encode('utf-8')).hexdigest()
+print(pwhash(sys.argv[1]))

@@ -16,9 +16,10 @@ class LinkDirWeb{
 	private Connection db;
 	private LoginManager login_manager;
 
-	this(){
-		tree = new LinkTree();
-		db = tree.getDB();
+	this(string pgsql_sock_path="/run/postgresql/"){
+		db = Connection("host="~pgsql_sock_path~" dbname=linkdir user=linkdir");
+		tree = new LinkTree(db);
+		
 		login_manager=new LoginManager(db);
 	}
 	void getLogin(scope HTTPServerRequest req,scope HTTPServerResponse res){

@@ -71,8 +71,8 @@ CREATE TABLE public.tags (
 CREATE TABLE public.users (
 	id SERIAL NOT NULL,
 	login varchar NOT NULL,
-	hash varchar NOT NULL,
-	email varchar NOT NULL,
+	hash varchar NULL,
+	email varchar NULL,
 	CONSTRAINT users_pk PRIMARY KEY (id)
 );
 
@@ -88,5 +88,5 @@ CREATE INDEX link_ts ON public.links USING gin (ts);
 CREATE INDEX tag_ts ON public.tags USING gin (ts);
 
 -- DEFAULT VALUES
-INSERT INTO public.users(id,login,hash,email) values (0,public,NULL,NULL);
+INSERT INTO public.users(id,login,hash,email) values (0,'public','','');
 INSERT INTO public.permissions(tree_id,user_id,permission_byte) VALUES (0,0,1);
